@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import Header from "../common/Header";
 import Footer from "../common/Footer";
-import { getServiceDetails, bookService, genOrderId, verifyPayment, getFeedbacks } from "../services/api";
+import { getServiceDetails, bookService, getFeedbacks } from "../services/api";
 
 export default function ServiceDetail({ isAuthenticated, setIsAuthenticated }) {
   const { id } = useParams();

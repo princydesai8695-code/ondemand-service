@@ -15,47 +15,48 @@ export default function Services({ isAuthenticated, setIsAuthenticated }) {
   const [searchParams] = useSearchParams();
   const BACKEND = "http://localhost:8000";
 
-  const fetchData = async (catId = "") => {
-  setLoading(true);
 
-  try {
-    const params = {};
-
-    if (catId) params.category_id = catId;
-    if (minPrice) params.min_price = minPrice;
-    if (maxPrice) params.max_price = maxPrice;
-
-    const res = await getServices(params);
-
-    setServices(res.data.data || []);
-  } catch (e) {
-    console.error(e);
-  } finally {
-    setLoading(false);
-  }
-};
 
 useEffect(() => {
-  const catId = searchParams.get("category_id") || "";
+  const fetchData = async () => {
+    setLoading(true);
 
-  setSelectedCat(catId);
+    try {
+      const catId = searchParams.get("category_id") || "";
 
-  fetchData(catId);
+      setSelectedCat(catId);
 
-  getCategories()
-    .then((r) => setCategories(r.data.data || []))
-    .catch(console.error);
+      const params = {};
+
+      if (catId) params.category_id = catId;
+      if (minPrice) params.min_price = minPrice;
+      if (maxPrice) params.max_price = maxPrice;
+
+      const res = await getServices(params);
+
+      setServices(res.data.data || []);
+
+      const catRes = await getCategories();
+
+      setCategories(catRes.data.data || []);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchData();
 }, [searchParams, minPrice, maxPrice]);
 
   const handleFilter = (e) => {
     e.preventDefault();
-    fetchData(selectedCat);
+    setSelectedCat(selectedCat);
   };
 
-  const handleCatChange = (catId) => {
-    setSelectedCat(catId);
-    fetchData(catId);
-  };
+ const handleCatChange = (catId) => {
+  setSelectedCat(catId);
+};
 
   const filtered = services.filter(
     (s) =>
@@ -274,7 +275,6 @@ useEffect(() => {
                         setMinPrice("");
                         setMaxPrice("");
                         setSelectedCat("");
-                        fetchData("");
                       }}
                       style={{
                         width: "100%",
