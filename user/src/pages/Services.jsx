@@ -15,30 +15,37 @@ export default function Services({ isAuthenticated, setIsAuthenticated }) {
   const [searchParams] = useSearchParams();
   const BACKEND = "http://localhost:8000";
 
-  useEffect(() => {
-    const catId = searchParams.get("category_id") || "";
-    setSelectedCat(catId);
-    fetchData(catId);
-    getCategories()
-      .then((r) => setCategories(r.data.data || []))
-      .catch(console.error);
-  }, [searchParams]);
+  const fetchData = async (catId = "") => {
+  setLoading(true);
 
-  const fetchData = async (catId = selectedCat) => {
-    setLoading(true);
-    try {
-      const params = {};
-      if (catId) params.category_id = catId;
-      if (minPrice) params.min_price = minPrice;
-      if (maxPrice) params.max_price = maxPrice;
-      const res = await getServices(params);
-      setServices(res.data.data || []);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    const params = {};
+
+    if (catId) params.category_id = catId;
+    if (minPrice) params.min_price = minPrice;
+    if (maxPrice) params.max_price = maxPrice;
+
+    const res = await getServices(params);
+
+    setServices(res.data.data || []);
+  } catch (e) {
+    console.error(e);
+  } finally {
+    setLoading(false);
+  }
+};
+
+useEffect(() => {
+  const catId = searchParams.get("category_id") || "";
+
+  setSelectedCat(catId);
+
+  fetchData(catId);
+
+  getCategories()
+    .then((r) => setCategories(r.data.data || []))
+    .catch(console.error);
+}, [searchParams, minPrice, maxPrice]);
 
   const handleFilter = (e) => {
     e.preventDefault();

@@ -54,7 +54,7 @@ export default function Home({ isAuthenticated, setIsAuthenticated }) {
       4000
     );
     return () => clearInterval(timer);
-  }, []);
+  }, [slides.length]);
 
   const BACKEND = "http://localhost:8000";
 

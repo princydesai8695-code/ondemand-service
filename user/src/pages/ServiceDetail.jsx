@@ -33,7 +33,7 @@ export default function ServiceDetail({ isAuthenticated, setIsAuthenticated }) {
       }
     };
     fetchAll();
-  }, [id]);
+  }, [id,navigate]);
 
   const handleBook = async (e) => {
     e.preventDefault();
